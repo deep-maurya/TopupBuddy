@@ -1,4 +1,5 @@
 const { UserModel } = require("../Models/User");
+const { Wallet } = require("../Models/Wallet");
 const { OTP_verify } = require("./otp");
 
 const Register = async(req,res) =>{
@@ -9,6 +10,11 @@ const Register = async(req,res) =>{
         const User_data = new UserModel(req.userData)
         try {
             await User_data.save();
+            const wallet = new Wallet({
+                userId: User_data._id, 
+                walletBalance: 0,
+            });
+            await wallet.save();
             res.status(201).json({ status: 1, message: 'User registered successfully', data: User_data });
         } catch (error) {
             if (error.code === 11000) { 

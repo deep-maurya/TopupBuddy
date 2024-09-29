@@ -5,7 +5,6 @@ const c_mid = require("../Middleware/common")
 const { verify_token } = require("../controller/JWT");
 const { Personal_Details } = require("../Middleware/User/User");
 require("dotenv").config()
-const { UserModel } = require("../Models/User");
 
 const UserRouter = Router();
 

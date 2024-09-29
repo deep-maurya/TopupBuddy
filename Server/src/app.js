@@ -5,6 +5,7 @@ const { UserRouter } = require("./Router/UserRouter");
 const cookieParser = require('cookie-parser');
 const { verify_token } = require("./controller/JWT");
 const { UserModel } = require("./Models/User");
+const { RechargeRoute } = require("./Router/Recharge");
 
 //const { logger } = require("./logs/log");
 require("dotenv").config();
@@ -20,6 +21,8 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/user',UserRouter)
+
+app.use('/recharge',RechargeRoute)
 
 
 app.use('/logout', (req, res) => {
