@@ -4,23 +4,6 @@ const { Wallet } = require("../Models/Wallet");
 const axios = require('axios');
 require("dotenv").config();
 
-function getCurrentDateTimeIST() {
-    const currentDate = new Date();
-    const options = { 
-        timeZone: 'Asia/Kolkata', 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit', 
-        year: 'numeric', 
-        month: '2-digit', 
-        day: '2-digit',
-        hour12: true
-    };
-    const dateTimeIST = currentDate.toLocaleString('en-GB', options).replace(',', '');
-    return dateTimeIST.toUpperCase();
-}
-
-
 const CreateOrderID = () => {
     return `ORD${new Date().getTime()}`;
 };
@@ -57,7 +40,7 @@ const callRechargeAPI = async (amount, operatorCode, mobileno, service, orderID)
             Status: status,
             ErrorMessage: ' ',
             OperatorRef: status==='Success'?dummyOperatorRefId():'',
-            TransactionDate: getCurrentDateTimeIST()
+            TransactionDate: Date.now()
         };        
         //console.log(Response)
     }
@@ -98,11 +81,12 @@ const Recharge_mobile = async (req, res) => {
             rechargeRecord.status = responseData.Status === 'Success' ? 'success' : 'failed';
             rechargeRecord.transactionId = responseData.OperatorRef || null;
             await rechargeRecord.save();
+            
         }
-
+        
         return res.status(200).json({
             Status: rechargeRecord.status,
-            rechargeRecord,
+            rechargeRecord
         });
 
     } catch (error) {
