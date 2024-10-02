@@ -90,7 +90,7 @@ const send_otp = async (req, res, next) => {
           sameSite: "Lax",
           maxAge: 5 * 60 * 1000,
         });
-        return res.status(200).json({ status: 1, message: "OTP sent successfully." });
+        return res.status(200).json({ status: 1, message: "OTP sent successfully."});
       } else {
         return res.status(500).json({ status: 0, message: "Failed to send OTP email." });
       }
@@ -166,13 +166,13 @@ const validate_user = async (req, res, next) => {
     }
 
     const token = create_token({ u_id: user._id },'60m');
-    res.cookie("auth_token", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "None",
-      maxAge: 3600000,
-    });
-    return res.json({ status: 1, message: "User login successfully.",data:{name:user.name,role:user.role} });
+    // res.cookie("auth_token", token, {
+    //   httpOnly: false,
+    //   secure: false,
+    //   sameSite: "None",
+    //   maxAge: 3600000,
+    // });
+    return res.json({ status: 1, message: "User login successfully.",data:{name:user.name,auth_token:token} });
     //console.log('Session cookie:', req.session.cookie);
   } catch (error) {
     return res
@@ -182,9 +182,8 @@ const validate_user = async (req, res, next) => {
 };
 
 const check_login_or_not_user = async(req,res,next) =>{
-  const auth_token = req.cookies.auth_token;
-  // console.log(auth_token)
-  // console.log(req.body)
+  const authHeader = req.headers['authorization'];
+  const auth_token = authHeader && authHeader.split(' ')[1];
   if (!auth_token) {
       return res.status(401).json({ status: 0, message: 'No session token found.' });
   }
