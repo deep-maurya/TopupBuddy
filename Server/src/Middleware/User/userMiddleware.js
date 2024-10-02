@@ -167,9 +167,9 @@ const validate_user = async (req, res, next) => {
 
     const token = create_token({ u_id: user._id },'60m');
     res.cookie("auth_token", token, {
-      httpOnly: false,
-      secure: false,
-      sameSite: "Lax",
+      httpOnly: true,
+      secure: true,
+      sameSite: "None",
       maxAge: 3600000,
     });
     return res.json({ status: 1, message: "User login successfully.",data:{name:user.name,role:user.role} });

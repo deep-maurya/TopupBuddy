@@ -29,7 +29,7 @@ app.use('/logout', (req, res) => {
     let msg = 'Logged out successfully';
     const cookieOptions = {
         path: '/',
-        httpOnly: true,
+        httpOnly: false,
         secure: false,
         sameSite: 'Lax'
     };
