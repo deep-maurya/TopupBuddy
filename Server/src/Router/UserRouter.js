@@ -68,7 +68,9 @@ UserRouter.get('/',
 
 //option but if we have to check session we can
 UserRouter.get('/check_session', async(req, res) => {
-    const token = req.cookies.auth_token;
+    // const token = req.cookies.auth_token;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
     if (!token) {
         return res.status(401).json({ status: 0, message: 'No session token found.' });
     }

@@ -84,13 +84,13 @@ const send_otp = async (req, res, next) => {
       if (send_email.status === 1) {
         // Email sent successfully
         let token = create_token({ ...req.userData, otp_id: otp_data.otp_id });
-        res.cookie("reg_token", token, {
-          httpOnly: true,
-          secure: false,
-          sameSite: "Lax",
-          maxAge: 5 * 60 * 1000,
-        });
-        return res.status(200).json({ status: 1, message: "OTP sent successfully."});
+        // res.cookie("reg_token", token, {
+        //   httpOnly: true,
+        //   secure: false,
+        //   sameSite: "Lax",
+        //   maxAge: 5 * 60 * 1000,
+        // });
+        return res.status(200).json({ status: 1, message: "OTP sent successfully.",token:reg_token});
       } else {
         return res.status(500).json({ status: 0, message: "Failed to send OTP email." });
       }
@@ -109,7 +109,9 @@ const send_otp = async (req, res, next) => {
 
 //Middleware for REGISTRATION OTP VERIFY
 const validate_token = async (req, res, next) => {
-  const token = req.cookies.reg_token || "NA";
+  const authHeader = req.headers['regToken'];
+  const token = authHeader && authHeader.split(' ')[1];
+  // const token = req.cookies.reg_token || "NA";
   const token_verify = await verify_token(token);
   if (token_verify.status) {
     req.userData = token_verify.decode;
@@ -272,12 +274,12 @@ const verify_password_link = async(req,res) => {
     const data = await verify_link_reset_password(token);
     //console.log(data)
     if(data.status===1){
-        res.cookie("fprl_token", token, {
-            httpOnly: true,
-            secure: false,
-            sameSite: "Lax",
-        });
-        return res.json({status:1,messege:"Reset Link is valid"})
+        // res.cookie("fprl_token", token, {
+        //     httpOnly: true,
+        //     secure: false,
+        //     sameSite: "Lax",
+        // });
+        return res.json({status:1,messege:"Reset Link is valid",token:fprl_token})
     } else {
         return res.json({status:0,messege:data.message})
     }
@@ -293,7 +295,11 @@ const forget_v_link_precheck = async(req,res,next) =>{
       msg = "Password must be at least 8 characters long";
       return res.status(201).json({ status:0, message: msg });
     }
-    const token = req.cookies.fprl_token || "NA";
+
+    const authHeader = req.headers['resetPassword'];
+    const resetpasstoken = authHeader && authHeader.split(' ')[1];
+    const token = resetpasstoken || "NA";
+
     const data = await verify_link_reset_password(token);
     //console.log(data)
     if(data.status===1){

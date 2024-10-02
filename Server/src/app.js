@@ -7,7 +7,6 @@ const { verify_token } = require("./controller/JWT");
 const { UserModel } = require("./Models/User");
 const { RechargeRoute } = require("./Router/Recharge");
 
-//const { logger } = require("./logs/log");
 require("dotenv").config();
 
 
