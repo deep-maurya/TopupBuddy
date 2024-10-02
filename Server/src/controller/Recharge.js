@@ -1,17 +1,67 @@
 
 const { RechargeRecord } = require("../Models/RechargeRecords");
 const { Wallet } = require("../Models/Wallet");
+const axios = require('axios');
+require("dotenv").config();
+
+function getCurrentDateTimeIST() {
+    const currentDate = new Date();
+    const options = { 
+        timeZone: 'Asia/Kolkata', 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        second: '2-digit', 
+        year: 'numeric', 
+        month: '2-digit', 
+        day: '2-digit',
+        hour12: true
+    };
+    const dateTimeIST = currentDate.toLocaleString('en-GB', options).replace(',', '');
+    return dateTimeIST.toUpperCase();
+}
+
 
 const CreateOrderID = () => {
     return `ORD${new Date().getTime()}`;
 };
 
-const callRechargeAPI = async (amount, operator, mobileno, service) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({ status: 'success', transactionId: `TXN${new Date().getTime()}` });
-        }, 2000);
-    });
+const dummyApiTransID = () => {
+    return Math.random().toString(36).substr(2, 12).toUpperCase();
+}
+
+const dummyOperatorRefId = () => {
+    return Math.random().toString(36).substr(2, 12).toUpperCase();
+}
+
+const dummyStatus = () => {
+    const statuses = ['Success', 'FAILED'];
+    return statuses[Math.floor(Math.random() * statuses.length)];
+}
+
+const callRechargeAPI = async (amount, operatorCode, mobileno, service, orderID) => {
+    let api_mode = 0;
+    let Error = 0;
+    let Response = ''
+    if(api_mode){
+        try {
+            Response = await axios.get(`https://cyrusrecharge.in/services_cyapi/recharge_cyapi.aspx?memberid=${process.env.CYRUS_API_KEY}&pin=${process.env.CYRUS_SECRET_KEY}&number=${mobileno}&operator=${operatorCode}&circle=19&amount=${amount}&usertx=${orderID}&format=json`)
+            console.log(Response.data)
+        } catch (error) {
+            console.log(error)
+            Error = 1;
+        }
+    } else {
+        const status = dummyStatus();
+        Response = {
+            ApiTransID: dummyApiTransID(),
+            Status: status,
+            ErrorMessage: ' ',
+            OperatorRef: status==='Success'?dummyOperatorRefId():'',
+            TransactionDate: getCurrentDateTimeIST()
+        };        
+        //console.log(Response)
+    }
+    return {error:Error,data:[Response]}
 };
 
 const Recharge_mobile = async (req, res) => {
@@ -20,19 +70,19 @@ const Recharge_mobile = async (req, res) => {
         console.log(userId)
         let wallet = await Wallet.findOne({ userId:userId });
         if (!wallet) {
-            return res.status(404).json({ message: "Wallet not found" });
+            return res.status(404).json({Status:'failed', message: "Wallet not found" });
         }
 
         if (!wallet.checkBalance(amount)) {
-            return res.status(400).json({ message: "Insufficient wallet balance" });
+            return res.status(400).json({Status:'failed', message: "Insufficient wallet balance" });
         }
 
         wallet.walletBalance -= amount;
         await wallet.save();
-
+        const order_id = CreateOrderID();
         const rechargeRecord = new RechargeRecord({
             userId,
-            orderId: CreateOrderID(),
+            orderId: order_id,
             amount,
             deviceType: "mobile",
             mobileType: service,
@@ -42,71 +92,27 @@ const Recharge_mobile = async (req, res) => {
         });
         await rechargeRecord.save();
 
-        
-        const apiResponse = await callRechargeAPI(amount, operator, mobileno, service);
-        rechargeRecord.status = apiResponse.status === 'success' ? 'success' : 'failed';
-        rechargeRecord.transactionId = apiResponse.transactionId || null;
-        await rechargeRecord.save();
+        const apiResponse = await callRechargeAPI(amount, 'JIO', mobileno, service, order_id);
+        if(apiResponse.error===0){
+            const responseData = apiResponse.data[0];
+            rechargeRecord.status = responseData.Status === 'Success' ? 'success' : 'failed';
+            rechargeRecord.transactionId = responseData.OperatorRef || null;
+            await rechargeRecord.save();
+        }
 
         return res.status(200).json({
-            message: apiResponse.status === 'success' ? "Recharge successful" : "Recharge failed",
+            Status: rechargeRecord.status,
             rechargeRecord,
         });
 
     } catch (error) {
         console.error("Error during recharge:", error);
-        return res.status(500).json({ message: "Internal server error", error });
-    }
-};
-
-
-const Recharge_DTH = async (req, res) => {
-    try {
-        const { amount, operator, customerID, userId } = req.rechargeData;
-        //console.log(userId)
-        let wallet = await Wallet.findOne({ userId:userId });
-        if (!wallet) {
-            return res.status(404).json({ message: "Wallet not found" });
-        }
-
-        if (!wallet.checkBalance(amount)) {
-            return res.status(400).json({ message: "Insufficient wallet balance" });
-        }
-
-        wallet.walletBalance -= amount;
-        await wallet.save();
-
-        const rechargeRecord = new RechargeRecord({
-            userId,
-            orderId: CreateOrderID(),
-            amount,
-            deviceType: "DTH",
-            operator,
-            customerId: customerID,
-            status: 'pending'
-        });
-        await rechargeRecord.save();
-
-        
-        const apiResponse = await callRechargeAPI(amount, operator, customerID, 'NA');
-        rechargeRecord.status = apiResponse.status === 'success' ? 'success' : 'failed';
-        rechargeRecord.transactionId = apiResponse.transactionId || null;
-        await rechargeRecord.save();
-
-        return res.status(200).json({
-            message: apiResponse.status === 'success' ? "Recharge successful" : "Recharge failed",
-            rechargeRecord,
-        });
-
-    } catch (error) {
-        console.error("Error during recharge:", error);
-        return res.status(500).json({ message: "Internal server error", error });
+        return res.status(500).json({ Status:'failed',message: "Internal server error" });
     }
 };
 
 module.exports = {
-    Recharge_mobile,
-    Recharge_DTH
+    Recharge_mobile
 };
 
 

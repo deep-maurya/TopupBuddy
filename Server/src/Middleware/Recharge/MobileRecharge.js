@@ -37,38 +37,6 @@ const Mobile_Recharge_fields_check = async (req, res, next) => {
 
 
 
-const DTH_recharge_fields_check = async(req,res,next) => {
-    const { amount, operator, customerID } = req.body;
-
-    if (!amount || !operator || !customerID) {
-        return res.status(400).json({ message: "All fields (amount, operator, CustomerID) are required" });
-    }
-
-    if (typeof amount !== 'number' || amount <= 0) {
-        return res.status(400).json({ message: "Invalid amount. Amount should be a number greater than 0" });
-    }
-
-    const validOperators = ['AirtelTV', 'VideoconD2H', 'TataSky'];
-    if (!validOperators.includes(operator)) {
-        return res.status(400).json({ message: `Invalid operator. Valid operators are: ${validOperators.join(', ')}` });
-    }
-
-    const customerIdRegex = /^[6-9]\d{9}$/;
-    if (!customerIdRegex.test(customerID)) {
-        return res.status(400).json({ message: "Invalid Customer ID. It should be a valid 10-digit Customer ID starting with 6-9" });
-    }
-
-    const token = req.cookies.auth_token;
-    const decoded = await verify_token(token, process.env.JWT_PRIVATE_KEY);
-    //console.log(decoded);
-    const userId = decoded.decode.u_id;
-    console.log(userId)
-    req.rechargeData = {amount, operator, customerID, userId}
-    
-    next();
-}
-
 module.exports = {
-    Mobile_Recharge_fields_check,
-    DTH_recharge_fields_check
+    Mobile_Recharge_fields_check
 };
