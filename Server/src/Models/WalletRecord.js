@@ -19,13 +19,18 @@ const WalletRecordSchema = new Schema({
         enum: ['success', 'failed', 'pending'],
         required: true,
     },
+    orderID : {
+        type: String,
+        required:true,  
+    },
     razorpayPaymentId: {
         type: String,
-        required: true,
+        required: false,
     },
     razorpayOrderId: {
         type: String,
-        required: true,
+        default:'',
+        required: false,
     }
     // },
     // razorpaySignature: {

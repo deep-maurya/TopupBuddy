@@ -90,7 +90,7 @@ const send_otp = async (req, res, next) => {
         //   sameSite: "Lax",
         //   maxAge: 5 * 60 * 1000,
         // });
-        return res.status(200).json({ status: 1, message: "OTP sent successfully.",token:reg_token});
+        return res.status(200).json({ status: 1, message: "OTP sent successfully.",token:token});
       } else {
         return res.status(500).json({ status: 0, message: "Failed to send OTP email." });
       }
@@ -109,7 +109,7 @@ const send_otp = async (req, res, next) => {
 
 //Middleware for REGISTRATION OTP VERIFY
 const validate_token = async (req, res, next) => {
-  const authHeader = req.headers['regToken'];
+  const authHeader = req.headers['registrationtoken'];
   const token = authHeader && authHeader.split(' ')[1];
   // const token = req.cookies.reg_token || "NA";
   const token_verify = await verify_token(token);
@@ -279,7 +279,7 @@ const verify_password_link = async(req,res) => {
         //     secure: false,
         //     sameSite: "Lax",
         // });
-        return res.json({status:1,messege:"Reset Link is valid",token:fprl_token})
+        return res.json({status:1,messege:"Reset Link is valid",token:token})
     } else {
         return res.json({status:0,messege:data.message})
     }
@@ -296,10 +296,9 @@ const forget_v_link_precheck = async(req,res,next) =>{
       return res.status(201).json({ status:0, message: msg });
     }
 
-    const authHeader = req.headers['resetPassword'];
+    const authHeader = req.headers['resetp'];
     const resetpasstoken = authHeader && authHeader.split(' ')[1];
-    const token = resetpasstoken || "NA";
-
+    const token = resetpasstoken;
     const data = await verify_link_reset_password(token);
     //console.log(data)
     if(data.status===1){

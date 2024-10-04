@@ -6,6 +6,9 @@ const cookieParser = require('cookie-parser');
 const { verify_token } = require("./controller/JWT");
 const { UserModel } = require("./Models/User");
 const { RechargeRoute } = require("./Router/Recharge");
+const { create_order } = require("./Utils/Razorpay");
+const { walletRouter } = require("./Router/Wallet");
+
 
 require("dotenv").config();
 
@@ -23,6 +26,7 @@ app.use('/user',UserRouter)
 
 app.use('/recharge',RechargeRoute)
 
+app.use('/wallet',walletRouter)
 
 app.use('/logout', (req, res) => {
     let msg = 'Logged out successfully';
@@ -47,6 +51,7 @@ app.use('/logout', (req, res) => {
 app.use('/token_verify',async(req,res)=>{
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
+    //console.log(token)
     if(token){
         const data = await verify_token(token);
         if(data.status){
@@ -66,7 +71,7 @@ app.use('/token_verify',async(req,res)=>{
 })
 
 app.get("/",(req,res)=>{
-    res.json({messege:"from server"})
+    res.json({messege:"From Server"})
 });
 
 app.listen(PORT,(err)=>{
