@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
+import InfoModel from './InfoModel';
 
 
 export const Status = ({ color, text }) => {
+  const bgColorClass = `bg-${color}-100`;
+  const textColorClass = `text-${color}-500`;
   return (
-    <span className={`p-2 border bg-${color}-100 text-${color}-500 rounded-sm border-${color}-400 ml-2`}>
+    <span className={`p-2 border ${bgColorClass} ${textColorClass} rounded-sm ml-2`}>
       {text}
     </span>
   );
@@ -19,6 +22,17 @@ export const RechargeRecords = ({ records }) => {
   const totalPages = Math.ceil(records.length / recordsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecord, setSelectedRecord] = useState(null);
+  const openModal = (record) => {
+    setSelectedRecord(record);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedRecord(null);
+    setIsModalOpen(false);
+  };
   return (
     <div className="font-bold bg-white shadow-md p-6">
       <div className="bg-white text-xl font-bold text-gray-500 mb-4">
@@ -29,11 +43,12 @@ export const RechargeRecords = ({ records }) => {
       ) : (
         <>
           {currentRecords.map((record, index) => (
-            <div key={index} className="p-5 border rounded-md grid grid-cols-2 items-center mb-4">
+
+            <div key={index} onClick={() => openModal(record)} className="p-5 border rounded-md grid grid-cols-2 items-center mb-4">
               <div className="font-medium items-center text-gray-400">
                 <span className="font-bold text-black">{record.mobile}</span> <br />
-                <div className="flex font-normal items-center">
-                  {record.operator} | {record.planType}  | Rs.{record.amount}
+                <div className="text-xs font-bold items-center">
+                  {record.operator} | {record.planType}  | Rs.{record.amount} <br/> <span>{new Date(record.timestamp).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</span>
                 </div>
               </div>
               <div className="text-end">
@@ -41,9 +56,13 @@ export const RechargeRecords = ({ records }) => {
                   color={record.status === 'Success' ? 'green' : record.status === 'Failed' ? 'red' : 'yellow'}
                   text={record.status}
                 />
+                    
               </div>
             </div>
           ))}
+
+          <InfoModel isOpen={isModalOpen} onClose={closeModal} record={selectedRecord} />
+
 
           <div className="flex justify-center mt-6">
             <button

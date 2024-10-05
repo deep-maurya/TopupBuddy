@@ -1,5 +1,8 @@
 import { Loader2Icon } from 'lucide-react';
 import React, { useState } from 'react';
+import { AxioPost } from '../../utils/AxiosUtils';
+import swal from 'sweetalert';
+
 
 const MobileRechargeForm = () => {
   const [loading, setLoading] = useState(false);
@@ -15,13 +18,45 @@ const MobileRechargeForm = () => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: name === 'amount' ? Number(value) : value,
     }));
   };
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form Submitted:', { ...formData, mobileType });
+    setLoading(true);
+    try {
+      const response = await AxioPost('recharge/mobile', {amount:formData.amount,service:mobileType,operator:formData.operator,mobileno:formData.mobileNumber});
+      // console.log("j");
+      console.log(response);
+      swal({
+        text: response.data.Status=='success'?'Recharge Success':'Recharge Failed',
+        //text: response.data.Status=='Success'?'Re':'warning',
+        icon: response.data.Status=='success'?'success':'warning',
+        buttons: false,
+        timer: 3000,
+      });
+      if(response.data.Status==='success'){
+        setFormData((prevData) => ({
+          ...prevData,
+          operator: '',
+          mobileNumber: '',
+          amount: '',
+        }));
+      }
+    } catch (error) {
+      //console.log(error.response.data.message)
+      setError('Something went wrong. Please try again.');
+      swal({
+        title: "Recharge Failed",
+        text: error.response.data.message,
+        icon: "warning",
+        buttons: false,
+        timer: 3000,
+      });
+    }
+    setLoading(false);
   };
 
   return (
