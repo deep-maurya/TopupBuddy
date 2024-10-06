@@ -62,7 +62,7 @@ export const Login = () => {
                         {/* Place logo here if needed */}
                     </div>
                     <h2 className="text-center mb-5 text-2xl font-bold leading-tight text-black">
-                        <div className="mb-2"> <u>LOGIN</u> {cookies.auth_token} </div>
+                        <div className="mb-2"> <u>LOGIN</u> </div>
                         <hr />
                     </h2>
                     {error && (

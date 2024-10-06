@@ -1,11 +1,13 @@
 import { createContext, useState, useContext,useEffect } from 'react';
 import { AxioPost } from '../utils/AxiosUtils';
+import { Loading } from '../Components/Utils/Loading';
 export const RechargeRecords = createContext({
     records : []
 });
 
 export const  RechargeContextProvider = ({children}) =>{
     const [records, setRecords] = useState([]);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const fetchData = async() => {
             try {
@@ -14,14 +16,17 @@ export const  RechargeContextProvider = ({children}) =>{
                 setRecords(response.data.Data)
             } catch (error) {
                 console.log(error)
+            } finally {
+                setLoading(false)
             }
         }
         fetchData();
-    }, []);
+    },[]);
     return (
         <>
             <RechargeRecords.Provider value={{records}}>
-                {children}
+                {loading && <Loading/>}
+                {!loading && children}
             </RechargeRecords.Provider>
         </>
     )

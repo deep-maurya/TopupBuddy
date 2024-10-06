@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import Cookies from 'js-cookie';
 //const BASE_URL = 'https://topupbuddy.onrender.com';
-const BASE_URL = 'http://localhost:9090';
+const BASE_URL = 'https://topupbuddy.onrender.com';
 
 export const AxioPost = async (endpoint, payload, auth_token = '', withCredentials = false) => {
   const authToken = Cookies.get('auth_token');
