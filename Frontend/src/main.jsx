@@ -5,18 +5,19 @@ import App from './App.jsx'
 import './index.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import { CookiesProvider } from 'react-cookie'
+import { RechargeContextProvider } from './Context/RechargeRecord.jsx'
 
 
 createRoot(document.getElementById('root')).render(
   <>
-  <>
     <BrowserRouter>
       <ChakraProvider>
-        <CookiesProvider defaultSetOptions={{ path: '/' }}>
-          <App />
-        </CookiesProvider>
+        <RechargeContextProvider>
+          <CookiesProvider defaultSetOptions={{ path: '/' }}>
+            <App />
+          </CookiesProvider>
+        </RechargeContextProvider>
       </ChakraProvider>
     </BrowserRouter>
-  </>
   </>
 )

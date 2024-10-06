@@ -46,17 +46,30 @@ export const RechargeRecords = ({ records }) => {
 
             <div key={index} onClick={() => openModal(record)} className="p-5 border rounded-md grid grid-cols-2 items-center mb-4">
               <div className="font-medium items-center text-gray-400">
-                <span className="font-bold text-black">{record.mobile}</span> <br />
+                <span className="font-bold text-black">{record.customerId}</span> <br />
                 <div className="text-xs font-bold items-center">
-                  {record.operator} | {record.planType}  | Rs.{record.amount} <br/> <span>{new Date(record.timestamp).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</span>
+                  {record.operator} | {record.mobileType}  | Rs.{record.amount} <br/> <span>{new Date(record.timestamp).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</span>
                 </div>
               </div>
               <div className="text-end">
-                <Status
-                  color={record.status === 'Success' ? 'green' : record.status === 'Failed' ? 'red' : 'yellow'}
-                  text={record.status}
-                />
-                    
+                {
+                record.status==='success' && 
+                (<span className={`p-2 border border-green-500 bg-green-100 text-green-500 rounded-sm ml-2`}>
+                  {(record.status).toUpperCase()}
+                </span>)
+                }
+                {
+                record.status==='failed' && 
+                (<span className={`p-2 border border-red-500 bg-red-100 text-red-500 rounded-sm ml-2`}>
+                  {(record.status).toUpperCase()}
+                </span>)
+                }   
+                {
+                record.status==='pending' && 
+                (<span className={`p-2 border border-yellow-500 bg-yellow-100 text-yellow-500 rounded-sm ml-2`}>
+                  {(record.status).toUpperCase()}
+                </span>)
+                }        
               </div>
             </div>
           ))}

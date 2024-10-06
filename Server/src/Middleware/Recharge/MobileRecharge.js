@@ -1,5 +1,3 @@
-const { verify_token } = require("../../controller/JWT");
-
 const Mobile_Recharge_fields_check = async (req, res, next) => {
 
     const { amount, operator, mobileno, service } = req.body;
