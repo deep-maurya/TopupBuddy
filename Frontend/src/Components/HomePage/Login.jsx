@@ -17,7 +17,7 @@ export const Login = () => {
         if(authStatus){
             navigate("/dashboard")
         }
-    },[authStatus])
+    },[])
     const handleLogin = async (e) => {
         e.preventDefault();
         setDisable(true);
@@ -36,9 +36,9 @@ export const Login = () => {
                     title: "Login Successful",
                     showConfirmButton: false,
                     timer: 1500
-                }).then(() => {
-                    navigate("/dashboard"); // Ensure navigation happens after the alert
-                });
+                })
+                navigate("/dashboard");
+                
             }
         } catch (err) {
             setError("Try Again Later");
