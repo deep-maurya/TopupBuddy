@@ -2,10 +2,12 @@ import { Loader2Icon } from 'lucide-react';
 import React, { useState } from 'react';
 import { AxioPost } from '../../utils/AxiosUtils';
 import swal from 'sweetalert';
+import { useRechargeContext } from '../../Context/RechargeRecord';
 
 
 const MobileRechargeForm = () => {
   const [loading, setLoading] = useState(false);
+  const { reloadRecords } = useRechargeContext();
   const [error, setError] = useState('');
   const [mobileType, setMobileType] = useState('prepaid');
   const [formData, setFormData] = useState({
@@ -55,12 +57,16 @@ const MobileRechargeForm = () => {
         buttons: false,
         timer: 3000,
       });
+    } finally {
+      setTimeout(()=>{
+        reloadRecords()
+      },2500)
     }
     setLoading(false);
   };
 
   return (
-    <div className="font-bold bg-white shadow-md p-6">
+    <div className="font-bold bg-white shadow-md p-6 sticky top-0 z-10">
       <form onSubmit={handleSubmit}>
         <h1 className='text-lg mb-4 font-black'>Mobile Recharge</h1>
         <hr />

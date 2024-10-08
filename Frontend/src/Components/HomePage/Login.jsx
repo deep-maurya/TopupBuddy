@@ -1,32 +1,34 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { AlertCircle, ArrowRight } from 'lucide-react';
 import { AxioPost } from '../../utils/AxiosUtils';
 import { BackgroundBackdrop } from './BackgroundBackdrop';
-import { useCookies } from 'react-cookie';
+import { useAuthContext } from '../../Context/Auth';
 
 export const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const [is_disable, set_disable] = useState(false);
+    const [isDisable, setDisable] = useState(false);
     const navigate = useNavigate();
-    const [cookies, setCookie] = useCookies([]);
-    const handle_login = async (e) => {
+    const { authStatus,login } = useAuthContext();
+    useEffect(()=>{
+        if(authStatus){
+            navigate("/dashboard")
+        }
+    },[authStatus])
+    const handleLogin = async (e) => {
         e.preventDefault();
-        set_disable(true);
+        setDisable(true);
         let endpoint = 'user/login';
-        let redirect = 'dashboard'
 
         try {
             const response = await AxioPost(endpoint, { email, password });
             setError(response.data.message);
-            console.log(response)
             if (response.data.status === 1) {
                 const token = response.data.data.auth_token;
-                setCookie('auth_token',token)
-                console.log(token)
+                login(token, response);
                 setError('');
                 Swal.fire({
                     position: "center",
@@ -34,10 +36,9 @@ export const Login = () => {
                     title: "Login Successful",
                     showConfirmButton: false,
                     timer: 1500
+                }).then(() => {
+                    navigate("/dashboard"); // Ensure navigation happens after the alert
                 });
-                setTimeout(() => {
-                    navigate(`/${redirect}`);
-                }, 1500);
             }
         } catch (err) {
             setError("Try Again Later");
@@ -50,7 +51,7 @@ export const Login = () => {
                 console.error('Error:', err.message);
             }
         } finally {
-            set_disable(false);
+            setDisable(false);
         }
     };
 
@@ -58,11 +59,8 @@ export const Login = () => {
         <section>
             <div className="flex items-center justify-center px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-24">
                 <div className="xl:mx-auto xl:w-full xl:max-w-sm w-full md:mx-auto md:w-1/2 2xl:max-w-md">
-                    <div className="mb-2 flex justify-center">
-                        {/* Place logo here if needed */}
-                    </div>
                     <h2 className="text-center mb-5 text-2xl font-bold leading-tight text-black">
-                        <div className="mb-2"> <u>LOGIN</u> </div>
+                        <div className="mb-2"><u>LOGIN</u></div>
                         <hr />
                     </h2>
                     {error && (
@@ -73,11 +71,10 @@ export const Login = () => {
                             </div>
                         </div>
                     )}
-                    <BackgroundBackdrop/>
+                    <BackgroundBackdrop />
                     <div className="border bg-white rounded-md p-5">
-                        <form onSubmit={handle_login} method='post'>
+                        <form onSubmit={handleLogin} method='post'>
                             <div className="space-y-5">
-
                                 <div>
                                     <label htmlFor="email" className="text-base font-medium text-gray-900">Email ID</label>
                                     <div className="mt-2">
@@ -113,10 +110,10 @@ export const Login = () => {
                                 <div>
                                     <button
                                         type="submit"
-                                        className={`inline-flex w-full items-center justify-center rounded-md ${is_disable ? 'bg-violet-300' : 'bg-violet-500'} px-3.5 py-2.5 font-semibold leading-7 text-white ${is_disable ? '' : 'hover:bg-violet/80'}`}
-                                        disabled={is_disable}
+                                        className={`inline-flex w-full items-center justify-center rounded-md ${isDisable ? 'bg-violet-300' : 'bg-violet-500'} px-3.5 py-2.5 font-semibold leading-7 text-white ${isDisable ? '' : 'hover:bg-violet/80'}`}
+                                        disabled={isDisable}
                                     >
-                                        {is_disable ? 'Loading....' : <>Get started <ArrowRight className="ml-2" size={16} /></>}
+                                        {isDisable ? 'Loading....' : <>Get started <ArrowRight className="ml-2" size={16} /></>}
                                     </button>
                                 </div>
                             </div>

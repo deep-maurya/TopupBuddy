@@ -18,12 +18,13 @@ export const All_Router = () => {
       {/* Protected Route */}
       <Route path="/dashboard" element={<Dashboard/>} />
       <Route path="/wallet" element={<WalletPage/>} />
+      <Route path='/profile' element={<ProfilePage />} />
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
       <Route path='/' element={<HomePage />} />
       <Route path='/forget_password' element={<ForgetPasswordPage />} />
       <Route path='/forget_password/:token' element={<ForgetPasswordPage />} />
-      <Route path='/profile' element={<ProfilePage />} />
+      
       <Route path='/*' element={<PageNotFoundPage />} />
     </Routes>
    

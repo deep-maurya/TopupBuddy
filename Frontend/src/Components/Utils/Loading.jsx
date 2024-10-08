@@ -2,7 +2,7 @@ import React from 'react'
 
 export const Loading = () => {
   return (
-    <div className="text-center mt-5">
+    <div className="flex justify-center items-center h-screen">
           <div role="status">
             <svg
               aria-hidden="true"

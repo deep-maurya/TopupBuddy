@@ -2,13 +2,14 @@ import axios from 'axios';
 
 import Cookies from 'js-cookie';
 //const BASE_URL = 'https://topupbuddy.onrender.com';
-const BASE_URL = 'https://topupbuddy.onrender.com';
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+console.log(BASE_URL)
 
 export const AxioPost = async (endpoint, payload, auth_token = '', withCredentials = false) => {
   const authToken = Cookies.get('auth_token');
   const regToken = Cookies.get('reg_token');
   const resetPassword = Cookies.get('fprl_token');
-  console.log(regToken)
+  //console.log(regToken)
   try {
     const response = await axios.post(`${BASE_URL}/${endpoint}`, payload, {
       headers: {
@@ -28,7 +29,7 @@ export const AxioPost = async (endpoint, payload, auth_token = '', withCredentia
 
 export const AxioGet = async (endpoint, params = {}, withCredentials = true) => {
   const authToken = Cookies.get('auth_token');
-  console.log(authToken)
+  //console.log(authToken)
   try {
     const response = await axios.get(`${BASE_URL}/${endpoint}`, {
       headers: {
