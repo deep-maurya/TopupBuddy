@@ -24,7 +24,9 @@ export const AuthProvider = ({ children }) => {
           console.error('Error verifying token:', error);
           setAuthStatus(false);
           Cookies.remove('auth_token');
-          navigate('/');
+          setTimeout(() => {
+            navigate('/');
+          }, 500);
         } finally {
           setLoading(false);
         }
@@ -34,7 +36,8 @@ export const AuthProvider = ({ children }) => {
       }
     };
     checkAuth();
-  }, []);
+  }, [navigate]);
+  
 
   const login = async (token, response) => {
     Cookies.set('auth_token', token);
@@ -51,8 +54,9 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{ authUser, authStatus, loading, login, logout }}>
-      {loading && <Loading/>}
-      {!loading && children}
+      {/* {loading && <Loading/>} */}
+      {/* {!loading && children} */}
+      {children}
     </AuthContext.Provider>
   );
 };

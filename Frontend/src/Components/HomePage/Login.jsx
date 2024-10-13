@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { AlertCircle, ArrowRight } from 'lucide-react';
+import { AlertCircle, ArrowRight, Loader2Icon } from 'lucide-react';
 import { AxioPost } from '../../utils/AxiosUtils';
 import { BackgroundBackdrop } from './BackgroundBackdrop';
 import { useAuthContext } from '../../Context/Auth';
@@ -17,7 +17,7 @@ export const Login = () => {
         if(authStatus){
             navigate("/dashboard")
         }
-    },[])
+    },[authStatus])
     const handleLogin = async (e) => {
         e.preventDefault();
         setDisable(true);
@@ -37,7 +37,7 @@ export const Login = () => {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                navigate("/dashboard");
+                //navigate("/dashboard");
                 
             }
         } catch (err) {
@@ -113,7 +113,7 @@ export const Login = () => {
                                         className={`inline-flex w-full items-center justify-center rounded-md ${isDisable ? 'bg-violet-300' : 'bg-violet-500'} px-3.5 py-2.5 font-semibold leading-7 text-white ${isDisable ? '' : 'hover:bg-violet/80'}`}
                                         disabled={isDisable}
                                     >
-                                        {isDisable ? 'Loading....' : <>Get started <ArrowRight className="ml-2" size={16} /></>}
+                                        {isDisable ? <Loader2Icon className="animate-spin" /> : <>Get started <ArrowRight className="ml-2" size={16} /></>}
                                     </button>
                                 </div>
                             </div>

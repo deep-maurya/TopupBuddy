@@ -36,16 +36,12 @@ export const RechargeContextProvider = ({ children }) => {
     fetchData();
   }, [authUser]);
 
-  if (loading) {
-    return <Loading />;
-  }
-
   if (error) {
     return <div>Error: {error}</div>;
   }
 
   return (
-    <RechargeRecords.Provider value={{ records, reloadRecords }}>
+    <RechargeRecords.Provider value={{ records, reloadRecords, loading }}>
       {children}
     </RechargeRecords.Provider>
   );

@@ -70,8 +70,6 @@ const MobileRechargeForm = () => {
       <form onSubmit={handleSubmit}>
         <h1 className='text-lg mb-4 font-black'>Mobile Recharge</h1>
         <hr />
-        
-    
         <div className="mb-5 mt-4">
           <label className="block text-sm font-bold text-gray-700">Select Operator</label>
           <select

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from 'react-cookie';
 
-import { AlertCircle, ArrowRight, CheckCircle } from 'lucide-react'
+import { AlertCircle, ArrowRight, CheckCircle, Loader2Icon } from 'lucide-react'
 import Swal from "sweetalert2";
 import { AxioPost } from "../../utils/AxiosUtils";
 import { BackgroundBackdrop } from "../../Components/HomePage/BackgroundBackdrop";
@@ -195,7 +195,7 @@ export const Register = () => {
                     disabled={is_disable}
                     className={`inline-flex w-full items-center justify-center rounded-md ${is_disable?'bg-violet-500':'bg-violet-500'} px-3.5 py-2.5 font-semibold leading-7 text-white ${is_disable?'':'hover:bg-violet/80'}`}
                   >
-                    Create Account <ArrowRight className="ml-2" size={16} />
+                    {is_disable ? <Loader2Icon className="animate-spin" /> : <>Create account <ArrowRight className="ml-2" size={16} /></>}
                   </button>
                 </div>
               </div>
@@ -260,7 +260,7 @@ export const Register = () => {
                       disabled={is_disable}
                       className={`inline-flex w-full items-center justify-center rounded-md ${is_disable?'bg-violet-300':'bg-violet-900'} px-3.5 py-2.5 font-semibold leading-7 text-white ${is_disable?'':'hover:bg-violet/80'}`}
                     >
-                      Verify OTP <ArrowRight className="ml-2" size={16} />
+                      {is_disable ? <Loader2Icon className="animate-spin" /> : <>Verify OTP <ArrowRight className="ml-2" size={16} /></>}
                     </button>
                   </div>
                 </div>

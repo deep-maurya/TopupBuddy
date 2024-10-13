@@ -15,12 +15,6 @@ export const Layout = (props) => {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  useEffect(() => {
-    if (!authUser) {
-      navigate('/login');
-    }
-  }, [authUser]);
-
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -44,10 +38,6 @@ export const Layout = (props) => {
       }
     });
   };
-
-  if (loading) {
-    return <Loading />;
-  }
 
   return (
     <>
