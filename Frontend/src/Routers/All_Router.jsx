@@ -10,6 +10,7 @@ import { RegisterPage } from '../Pages/RegisterPage';
 import { ProfilePage } from '../Pages/ProfilePage';
 import { Dashboard } from '../Pages/Dashboard';
 import { WalletPage } from '../Pages/WalletPage';
+import { WalletContextProvider } from '../Context/WalletRecord';
 
 export const All_Router = () => {
   return (
@@ -17,14 +18,13 @@ export const All_Router = () => {
     <Routes>
       {/* Protected Route */}
       <Route path="/dashboard" element={<Dashboard/>} />
-      <Route path="/wallet" element={<WalletPage/>} />
+      <Route path="/wallet" element={<WalletContextProvider><WalletPage/></WalletContextProvider>} />
       <Route path='/profile' element={<ProfilePage />} />
       <Route path='/login' element={<LoginPage />} />
       <Route path='/register' element={<RegisterPage />} />
       <Route path='/' element={<HomePage />} />
       <Route path='/forget_password' element={<ForgetPasswordPage />} />
       <Route path='/forget_password/:token' element={<ForgetPasswordPage />} />
-      
       <Route path='/*' element={<PageNotFoundPage />} />
     </Routes>
    

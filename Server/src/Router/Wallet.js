@@ -91,6 +91,20 @@ walletRouter.route('/wallet_balance').post(
     }
 )
 
+walletRouter.route('/wallet_record').post(
+    check_login_or_not_user,
+    async (req,res)=>{
+        const userID = req.user.user_id;
+        //console.log(userID)
+        try {
+            let wallet = await WalletRecord.find({ userId:userID }).sort({ timestamp: -1 });
+            return res.json({status:1,messege:"Wallet records Fetched successfully",records:wallet})  
+        } catch (error) {
+            return res.json({status:0,messege:"Try again.."})
+        }
+    }
+)
+
 
 module.exports = {
     walletRouter

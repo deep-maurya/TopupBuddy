@@ -3,7 +3,7 @@ import { AxioPost } from '../../utils/AxiosUtils';
 import { AlertCircle, Loader, Loader2Icon, LoaderPinwheelIcon } from 'lucide-react';
 import swal from 'sweetalert';
 
-export const WalletTopup = () => {
+export const WalletTopup = ({reloadRecords}) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [amount, setAmount] = useState(100);
@@ -33,6 +33,9 @@ export const WalletTopup = () => {
                 buttons: false,
                 timer: 3000,
             });
+            setTimeout(()=>{
+              reloadRecords();
+            },3000)
           } else {
             setError(verifyResponse.data.message);
           }
