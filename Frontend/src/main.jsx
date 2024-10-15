@@ -7,6 +7,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 import { CookiesProvider } from 'react-cookie'
 import { RechargeContextProvider } from './Context/RechargeRecord.jsx'
 import { AuthProvider } from './Context/Auth.jsx'
+import { MyBalanceContextProvider } from './Context/MyBalance.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -15,9 +16,11 @@ createRoot(document.getElementById('root')).render(
       <ChakraProvider>
         <AuthProvider>
           <RechargeContextProvider>
-            <CookiesProvider defaultSetOptions={{ path: '/' }}>
-              <App />
-            </CookiesProvider>
+            <MyBalanceContextProvider>
+              <CookiesProvider defaultSetOptions={{ path: '/' }}>
+                <App />
+              </CookiesProvider>
+            </MyBalanceContextProvider>
           </RechargeContextProvider>
         </AuthProvider>
       </ChakraProvider>
