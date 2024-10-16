@@ -75,7 +75,55 @@ const Recharge_mobile = async (req, res) => {
         });
         await rechargeRecord.save();
 
-        const apiResponse = await callRechargeAPI(amount, 'JIO', mobileno, service, order_id);
+        const apiResponse = await callRechargeAPI(amount, service, mobileno, service, order_id);
+        if(apiResponse.error===0){
+            const responseData = apiResponse.data[0];
+            rechargeRecord.status = responseData.Status === 'Success' ? 'success' : 'failed';
+            rechargeRecord.transactionId = responseData.OperatorRef || null;
+            await rechargeRecord.save();
+            
+        }
+        
+        return res.status(200).json({
+            Status: rechargeRecord.status,
+            rechargeRecord
+        });
+
+    } catch (error) {
+        console.error("Error during recharge:", error);
+        return res.status(500).json({ Status:'failed',message: "Internal server error" });
+    }
+};
+
+
+const Recharge_DTH = async (req, res) => {
+    try {
+        const { amount, operator, customerId, userId } = req.rechargeData;
+        console.log(userId)
+        let wallet = await Wallet.findOne({ userId:userId });
+        if (!wallet) {
+            return res.status(404).json({Status:'failed', message: "Wallet not found" });
+        }
+
+        if (!wallet.checkBalance(amount)) {
+            return res.status(400).json({Status:'failed', message: "Insufficient wallet balance" });
+        }
+
+        wallet.walletBalance -= amount;
+        await wallet.save();
+        const order_id = CreateOrderID();
+        const rechargeRecord = new RechargeRecord({
+            userId,
+            orderId: order_id,
+            amount,
+            deviceType: "DTH",
+            operator,
+            customerId: customerId,
+            status: 'pending'
+        });
+        await rechargeRecord.save();
+
+        const apiResponse = await callRechargeAPI(amount, 'JIO', customerId, '', order_id);
         if(apiResponse.error===0){
             const responseData = apiResponse.data[0];
             rechargeRecord.status = responseData.Status === 'Success' ? 'success' : 'failed';
@@ -96,7 +144,8 @@ const Recharge_mobile = async (req, res) => {
 };
 
 module.exports = {
-    Recharge_mobile
+    Recharge_mobile,
+    Recharge_DTH
 };
 
 

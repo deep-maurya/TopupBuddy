@@ -17,7 +17,7 @@ export const WalletPage = () => {
          <WalletTopup reloadRecords={reloadRecords}/>
         </div>
         <div className="lg:col-span-2 ">
-          {!loading?<WalletRecords records={records}/>:<Loading/>}
+          <WalletRecords loading={loading} records={records}/>:
         </div>
       </div>
       

@@ -11,9 +11,10 @@ const InfoModel = ({ isOpen, onClose, record }) => {
       <div className="bg-white p-6 rounded-md shadow-lg z-10 w-full max-w-lg animate__animated animate__fadeIn">
         
         <h2 className="text-xl font-bold mb-4 border-b-4 pb-4 border-green-100">Recharge Record Details</h2>
-        <p><strong>Mobile:</strong> {record.customerId}</p>
+        <p> <strong>Recharge Type :</strong> {record.deviceType} </p>
+        {record.deviceType!='DTH'? (<p><strong>Mobile:</strong> {record.customerId}</p>):(<p><strong>Customer ID:</strong> {record.customerId}</p>)}
         <p><strong>Operator:</strong> {record.operator}</p>
-        <p><strong>Plan Type:</strong> {record.mobileType}</p>
+        {record.deviceType!='DTH' && <p><strong>Plan Type:</strong> {record.mobileType}</p>}
         <p><strong>Amount:</strong> Rs.{record.amount}</p>
         <p><strong>Status:</strong> {record.status}</p>
         <p><strong>Reference ID:</strong> {record.orderId}</p>

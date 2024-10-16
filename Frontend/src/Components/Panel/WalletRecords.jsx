@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import InfoModelWallet from './InfoModelWallet';
+import { Loading } from '../Utils/Loading';
 
 
 export const Status = ({ color, text }) => {
@@ -12,7 +13,7 @@ export const Status = ({ color, text }) => {
   );
 };
 
-export const WalletRecords = ({ records }) => {
+export const WalletRecords = ({ loading,records }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const recordsPerPage = 10;
   const indexOfLastRecord = currentPage * recordsPerPage;
@@ -43,11 +44,12 @@ export const WalletRecords = ({ records }) => {
       <div className="bg-white text-xl font-bold text-gray-500 mb-4">
         Wallet Topup Records
       </div>
-      {records.length === 0 ? (
+      {loading && <Loading/>}
+      {!loading && records.length === 0 ? (
         <p className="text-center text-xl font-bold">No records available</p>
       ) : (
         <>
-          {currentRecords.map((record, index) => (
+          {currentRecords?.map((record, index) => (
             <div key={index} onClick={() => openModal(record)} className="p-5 border rounded-md grid grid-cols-2 items-center mb-4">
               <div className="font-medium items-center text-gray-400">
                 <span className="font-bold text-black">Rs.{record.amount}</span> <br />
