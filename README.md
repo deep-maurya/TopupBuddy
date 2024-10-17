@@ -14,7 +14,6 @@
 - **Mobile Recharge:** Prepaid and postpaid mobile recharges.
 - **DTH Recharge:** Recharge your DTH connection with ease.
 - **Responsive UI:** Optimized for both desktop and mobile screens.
-- **Real-time Notifications:** Stay updated with real-time notifications.
 
 ## Tech Stack
 
