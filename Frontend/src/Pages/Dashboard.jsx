@@ -13,7 +13,7 @@ export const Dashboard = () => {
     <Layout>
       <h1 className='text-3xl mb-3 font-black'>Dashboard</h1>
       <div className="grid lg:grid-cols-3 md:grid-cols-1 gap-4">
-        <div className="">
+        <div className="sticky top-0">
           {/* <MobileRechargeForm/> */}
           <AllServices/>
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import 'animate.css';
+import { BadgeCheck, BadgeInfo, BadgeXIcon } from 'lucide-react';
 
 
 const InfoModelWallet = ({ isOpen, onClose, record }) => {
@@ -12,7 +13,12 @@ const InfoModelWallet = ({ isOpen, onClose, record }) => {
         
         <h2 className="text-xl font-bold mb-4 border-b-4 pb-4 border-green-100">Details</h2>
         <p><strong>Amount:</strong> Rs.{record.amount}</p>
-        <p><strong>Status:</strong> {record.status}</p>
+        <p className='flex justify-center items-center'>
+          <strong className='mr-1'>Status: </strong> {record.status.toUpperCase()} 
+          {record.status==='success' && <BadgeCheck color={'white'} fill='#1fc55c'/>}
+          {record.status==='failed' && <BadgeXIcon color={'white'} fill='#e3605e'/>}
+          {record.status==='pending' && <BadgeInfo color={'white'} fill='#eab306'/>}
+        </p>
         <p><strong>Order ID:</strong> {record.orderID}</p>
         <p><strong>Razorpay OrderID:</strong> {record.razorpayOrderId}</p>
         <p><strong>Razoprpay PaymentID:</strong> {record.razorpayPaymentId?record.razorpayPaymentId:"NA"}</p>
