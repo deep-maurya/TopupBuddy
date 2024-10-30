@@ -6,7 +6,6 @@ const cookieParser = require('cookie-parser');
 const { verify_token } = require("./controller/JWT");
 const { UserModel } = require("./Models/User");
 const { RechargeRoute } = require("./Router/Recharge");
-const { create_order } = require("./Utils/Razorpay");
 const { walletRouter } = require("./Router/Wallet");
 
 
