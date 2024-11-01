@@ -1,4 +1,4 @@
-import { createContext, useState, useContext, useEffect } from 'react';
+import { createContext, useState, useContext, useEffect, useMemo } from 'react';
 import { AxioPost } from '../utils/AxiosUtils';
 import { useAuthContext } from './Auth';
 
@@ -35,12 +35,14 @@ export const RechargeContextProvider = ({ children }) => {
     fetchData();
   }, [authUser]);
 
+  const memoizedValue = useMemo(() => ({ records, reloadRecords, loading }), [records, loading]);
+
   if (error) {
     return <div>Error: {error}</div>;
   }
 
   return (
-    <RechargeRecords.Provider value={{ records, reloadRecords, loading }}>
+    <RechargeRecords.Provider value={memoizedValue}>
       {children}
     </RechargeRecords.Provider>
   );
